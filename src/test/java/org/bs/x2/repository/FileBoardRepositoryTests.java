@@ -120,4 +120,45 @@ public class FileBoardRepositoryTests {
         log.info(board.getImages());
     }
     
+    // 삭제
+    @Test
+    @Transactional
+    @Commit
+    public void delete1(){
+
+        Long bno = 102L;
+
+        repository.deleteById(bno);
+
+    }
+
+    //수정은 삭제 후 새롭게 등록
+    @Test
+    @Commit
+    @Transactional
+    public void update(){
+
+        Long bno = 101L;
+
+        // 조회
+        Optional<FileBoard> result = repository.findById(bno);
+        // 예외 발생 시 던지기
+        FileBoard fileBoard = result.orElseThrow();
+        // 이미지 삭제
+        fileBoard.clearImages();
+
+        // 이미지 만들기
+        FileBoardImage img1 = FileBoardImage.builder()
+        .uuid(UUID.randomUUID().toString())
+        .fname("beomsu.jpg")
+        .build();
+
+        // 이미지 추가
+        fileBoard.addImage(img1);
+
+        // save
+        repository.save(fileBoard);
+
+        
+    }
 }

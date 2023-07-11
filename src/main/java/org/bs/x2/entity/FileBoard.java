@@ -40,7 +40,7 @@ public class FileBoard {
     // 20개를일괄처리
     @BatchSize(size = 20)
     // 관리 주체가 OneToMany 라면 cascade 적용 remove , 같이 삭제 처리 
-    @OneToMany(cascade = {CascadeType.PERSIST , CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY , orphanRemoval = true)
     @JoinColumn(name="board")
     @Builder.Default
     // new ArrayList로 생성해주는 이유는 엔티티 매니저가 리스트를 가져올 때 마다 새로운 리스트를 뽑아냄
@@ -56,4 +56,11 @@ public class FileBoard {
         // 리스트에 추가하기
         images.add(boardImage);
     }
+
+    // 수정은 이미지 삭제 후 새롭게 등록
+    // 이미지 지우기
+    public void clearImages(){
+        images.clear();
+    }
+
 }
