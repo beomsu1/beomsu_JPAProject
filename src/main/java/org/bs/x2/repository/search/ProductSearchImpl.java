@@ -6,7 +6,6 @@ import org.bs.x2.dto.PageRequestDTO;
 import org.bs.x2.dto.PageResponseDTO;
 import org.bs.x2.dto.ProductListDTO;
 import org.bs.x2.entity.Product;
-import org.bs.x2.entity.ProductImage;
 import org.bs.x2.entity.QProduct;
 import org.bs.x2.entity.QProductImage;
 import org.bs.x2.entity.QProductReview;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Projection;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 

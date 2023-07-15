@@ -9,12 +9,7 @@ import org.bs.x2.dto.ProductDTO;
 import org.bs.x2.dto.ProductListDTO;
 import org.bs.x2.service.ProductService;
 import org.bs.x2.util.FileUploader;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -46,9 +41,18 @@ public class ProductController {
 
         // 파일 등록
         List<String> fileNames = 
-        uploader.uploadFiles(productDTO.getFiles());
+        uploader.uploadFiles(productDTO.getFiles() , true);
+        productDTO.setImages(fileNames);
 
-        return Map.of("result" , 123L);
+        Long pno = service.register(productDTO);
+
+        return Map.of("result" , pno);
     }
-    
+
+    // 조회
+    @GetMapping("{pno}")
+    public ProductDTO getOne(@PathVariable("pno") Long pno){
+
+        return service.readOne(pno);
+    }
 }
