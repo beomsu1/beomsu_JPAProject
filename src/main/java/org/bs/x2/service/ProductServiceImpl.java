@@ -6,11 +6,14 @@ import org.bs.x2.dto.ProductDTO;
 import org.bs.x2.dto.ProductListDTO;
 import org.bs.x2.entity.Product;
 import org.bs.x2.repository.ProductRepository;
+import org.bs.x2.util.FileUploader;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository repository;
+
+    private final FileUploader fileUploader;
 
     // 목록
     @Override
@@ -66,6 +71,68 @@ public class ProductServiceImpl implements ProductService{
                 .build();
 
         return dto;
+    }
+
+    // 삭제
+    @Override
+    public void delete(Long pno) {
+
+        // 조회
+        Product product = repository.selectOne(pno);
+
+        // 삭제 여부를 true로 변경
+        product.changeDel(true);
+
+        // save
+        repository.save(product);
+
+        // 이미지 조회
+        List<String> fileNames = product.getImages().stream().map(i -> i.getFname()).collect(Collectors.toList());
+
+        // 파일 삭제
+        fileUploader.delete(fileNames);
+
+    }
+
+    // 수정
+    @Override
+    public void modify(ProductDTO productDTO) {
+
+        // 조회
+        Optional<Product> result = repository.findById(productDTO.getPno());
+
+        Product product = result.orElseThrow();
+
+        // 기본 정보들 수정
+        product.changePname(productDTO.getPname());
+        product.changePdesc(productDTO.getPname());
+        product.changePrice(productDTO.getPrice());
+
+        // 기존 이미지 목록 살리기
+        List<String> oldFileNames = product.getImages().stream().map(pi -> pi.getFname()).collect(Collectors.toList());
+
+        // 이미지들 clear
+        product.ClearImage();
+
+        // 이미지 문자열들 추가 addImage()
+        // productDTO에서 가져온 이미지를 product에 추가하는 로직
+        productDTO.getImages().forEach(fname -> product.addImage(fname));
+
+        log.info(product);
+
+        repository.save(product);
+
+        // 기존 파일들 중에 ProductDTO.getImages에 없는 파일 찾기
+
+        List<String> newFiles = productDTO.getImages();
+
+        // 삭제 대상 파일
+        // index에서 -1이면 존재하지 않는 파일이다!
+
+        List<String> wantDeleteFiles =
+        oldFileNames.stream().filter(f -> newFiles.indexOf(f) == -1 ).collect(Collectors.toList());
+
+        fileUploader.delete(wantDeleteFiles);
     }
 
 }

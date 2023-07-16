@@ -75,6 +75,7 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
         query.leftJoin(review).on(review.product.eq(product));
 
         query.where(pImage.ord.eq(0));
+        query.where(product.delFlag.eq(Boolean.FALSE));
 
         int PageNum = requestDTO.getPage() < 0 ? 0 : requestDTO.getPage()-1;
 

@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface ProductRepository extends JpaRepository<Product,Long> , ProductSearch{
 
     // 조회
-    // images는 같이 로딩해오세요~! 라는 뜻
+    //images는 같이 로딩해와라! 라고 지시
     @EntityGraph(attributePaths = "images")
-    @Query("select p from Product p where p.pno = :pno")
-    Product selectOne(@Param("pno")Long pno);
+    @Query("select p from Product p where p.delFlag=false and p.pno = :pno ")
+    Product selectOne (@Param("pno") Long pno);
 }

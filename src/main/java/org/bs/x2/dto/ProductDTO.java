@@ -30,7 +30,8 @@ public class ProductDTO {
     private int price;
 
     // 문자열 타입의 이미지
-    private List<String> images;
+    @Builder.Default
+    private List<String> images = new ArrayList<>();
 
     @Builder.Default
     private List<MultipartFile> files = new ArrayList<>();
