@@ -55,4 +55,45 @@ public class ProductController {
 
         return service.readOne(pno);
     }
+
+    // 삭제
+    @DeleteMapping("{pno}")
+    public Map<String,Long> delete (@PathVariable ("pno") Long pno){
+
+        service.delete(pno);
+
+        return Map.of("result" , pno );
+
+    }
+
+    // 수정 put으로 사용 불가 -> post 사용
+    @PostMapping("modify")
+    public Map<String,Long> modify (ProductDTO productDTO){
+
+        log.info("---------------");
+        log.info(productDTO);
+        log.info("---------------");
+
+        if(productDTO.getFiles() != null && productDTO.getFiles().size() > 0){
+
+            // productDTO에서 가져온 파일들을 uploader를 사용하여 업로드하고,
+            // 업로드된 파일들의 원본 파일 이름들을 uploadFileNames 리스트에 저장
+            List<String> uploadFileNames = uploader.uploadFiles(productDTO.getFiles(), true);
+
+            // 기존 이미지
+            List<String> oldFileNames = productDTO.getImages();
+
+            // 기존 이미지를 새로운 이미지에 추가해줘야함
+            uploadFileNames.forEach(fname -> oldFileNames.add(fname));
+
+        }
+
+        log.info("----------------");
+        log.info(productDTO);
+
+        service.modify(productDTO);
+
+        return Map.of("result" , 111L);
+    }
+
 }

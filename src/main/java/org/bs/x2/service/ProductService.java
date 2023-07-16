@@ -18,4 +18,10 @@ public interface ProductService {
 
     // 조회
     ProductDTO readOne (Long pno);
+
+    // 삭제
+    void delete (Long pno);
+
+    // 수정
+    void modify (ProductDTO productDTO);
 }

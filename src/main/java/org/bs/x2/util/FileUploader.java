@@ -87,5 +87,32 @@ public class FileUploader {
             super(msg);
         }
     }
+
+    // 파일 삭제 함수
+    public void delete(List<String> fileNames){
+        // 파일이 없는 경우 리턴
+        if(fileNames == null || fileNames.size() == 0){
+            return;
+        }
+
+        for (String fname :
+                fileNames) {
+
+            // 원본 파일
+            File original = new File(path,fname);
+
+            // 썸네일
+            File thumb = new File(path,"s_"+fname);
+
+            // 썸네일이 있다면 삭제처리
+            if(thumb.exists()){
+                thumb.delete();
+            }
+
+            original.delete();
+        }
+
+
+    }
     
 }
