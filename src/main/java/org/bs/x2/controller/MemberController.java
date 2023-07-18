@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bs.x2.dto.MemberDTO;
 import org.bs.x2.service.MemberService;
+import org.bs.x2.service.SocialService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final SocialService socialService;
 
 
     @PostMapping("login")
@@ -36,5 +39,19 @@ public class MemberController {
 
         return result;
 
+    }
+
+    // 인가 코드 가져오기
+    @GetMapping("kakao")
+    public MemberDTO getAuthCode (String code){
+
+        log.info("----------");
+        log.info(code);
+
+        String email = socialService.getKakaoEmail(code);
+
+        MemberDTO memberDTO = memberService.getMemberWithEmail(email);
+
+        return memberDTO;
     }
 }

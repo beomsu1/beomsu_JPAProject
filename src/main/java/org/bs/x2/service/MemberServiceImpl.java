@@ -8,6 +8,7 @@ import org.bs.x2.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -58,5 +59,51 @@ public class MemberServiceImpl implements MemberService{
             throw new MemberLoginException(e.getMessage());
         }
         return memberDTO;
+    }
+
+    // 멤버랑 이메일 같이 받기
+    @Override
+    public MemberDTO getMemberWithEmail(String email) {
+
+        // 조회
+        Optional<Member> result = memberRepository.findById(email);
+
+        // 회원가입이 되어있다면
+        if(result.isPresent()){
+
+            // 멤버 끄집어 내기
+            Member member = result.get();
+
+            // member -> dto 로 변경
+            MemberDTO dto = MemberDTO.builder()
+                    .email(member.getEmail())
+                    .nickname(member.getNickname())
+                    .admin(member.isAdmin())
+                    .build();
+
+            return dto;
+        }
+
+        // 회원가입이 되어있지 않은 고객이라면
+        // 패스워드를 UUID를 사용해 랜덤부여
+        // 가짜 회원 데이터 생성
+        Member socialMember = Member.builder()
+                .email(email)
+                .pw(UUID.randomUUID().toString())
+                .nickname("SOCIAL_MEMBER")
+                .build();
+
+        // db에 save
+        memberRepository.save(socialMember);
+
+        // member -> dto 로 변경
+        MemberDTO dto = MemberDTO.builder()
+                .email(socialMember.getEmail())
+                .nickname(socialMember.getNickname())
+                .admin(socialMember.isAdmin())
+                .build();
+
+        return dto;
+
     }
 }
