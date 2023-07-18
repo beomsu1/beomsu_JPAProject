@@ -9,5 +9,8 @@ public interface MemberService {
     // 로그인 기능
     MemberDTO login ( String email , String pw);
 
+    // 멤버랑 같이 이메일 받기
+    MemberDTO getMemberWithEmail(String email);
+
 
 }
