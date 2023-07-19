@@ -5,7 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.bs.x2.dto.MemberDTO;
 import org.bs.x2.service.MemberService;
 import org.bs.x2.service.SocialService;
+import org.bs.x2.util.JWTUtil;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @Log4j2
@@ -17,6 +20,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final SocialService socialService;
+
+    private final JWTUtil jwtUtil;
 
 
     @PostMapping("login")
@@ -34,6 +39,12 @@ public class MemberController {
         MemberDTO result = memberService.login(
                 memberDTO.getEmail() , memberDTO.getPw()
         );
+
+        //AccessToken 만들기 - jwtUtil에 있는 generate 이용 - 만료 기간: 10분
+        result.setAccessToken(jwtUtil.generate(Map.of("email" , result.getEmail()) , 10));
+
+        //refreshToken 만들기 - 만료 기간 : 하루
+        result.setRefreshToken(jwtUtil.generate(Map.of("email", result.getEmail()),60*24));
 
         log.info("Return: " + result);
 
