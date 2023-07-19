@@ -19,5 +19,9 @@ public class MemberDTO {
 
     private boolean admin;
 
+    private String accessToken;
+
+    private String refreshToken;
+
 
 }
