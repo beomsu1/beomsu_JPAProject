@@ -27,6 +27,6 @@ public class CustomServletConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**")
 
                 // 경로뺴주기 - 로그인은 뺴줄거다
-                .excludePathPatterns("/api/member/login");
+                .excludePathPatterns("/api/member/login" , "/api/member/refresh");
     }
 }
