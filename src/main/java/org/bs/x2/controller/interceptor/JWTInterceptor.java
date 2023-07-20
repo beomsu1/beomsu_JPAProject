@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bs.x2.util.JWTUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -53,6 +54,9 @@ public class JWTInterceptor implements HandlerInterceptor {
 
             // 내가 보내는 타입은 json이야! 라는 뜻
             response.setContentType("application/json");
+
+            // 401 코드
+            // response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
             Gson gson = new Gson();
 
